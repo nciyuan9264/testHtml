@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Point Array Drawing with Pixi.js</title>
+  <script src="./pixi_v7.1.1.js"></script>
+  <style>
+    body {
+      margin: 0;
+      overflow: auto;
+      background-color: #222222;
+    }
+
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="canvas"></canvas>
+  <script>
+    // 定义点数组
+    const points = [
+      {
+        "x": 1420.7840947939596,
+        "y": 1227.253858912574
+      },
+      {
+        "x": 930.87066039628,
+        "y": 1156.650553064544
+      },
+      {
+        "x": 759.8054927672863,
+        "y": 1282.5600083253157
+      },
+      {
+        "x": 652.4620998585759,
+        "y": 1139.067722822414
+      },
+      {
+        "x": 806.0018751662287,
+        "y": 1017.5266910739733
+      },
+      {
+        "x": 807.6436056992502,
+        "y": 991.7586930753522
+      },
+      {
+        "x": 878.2469115472801,
+        "y": 501.8452586776725
+      },
+      {
+        x:
+          909.3420577459912,
+        y
+          :
+          1172.9731738859878
+      },
+      {
+        x: 930.6405426359015,
+        y: 1161.207679122189
+      }
+    ]
+    const canvas = document.getElementById('canvas');
+    canvas.width = 1500
+    canvas.height = 1500
+
+    // 创建 Pixi 应用
+    const app = new PIXI.Application({
+      width: 1500,
+      height: 1500,
+      view: canvas, // 指定 HTML 元素
+      renderer: 'canvas'
+    });
+
+
+    // 添加到页面
+    document.body.appendChild(app.view);
+
+    // 创建一个新的图形对象
+    const graphics = new PIXI.Graphics();
+
+    // 设置绘制样式
+    graphics.lineStyle(2, 0xFFFFFF); // 设置线条颜色和宽度
+
+    // 绘制点数组
+    points.forEach(point => {
+      graphics.drawCircle(point.x, point.y, 2); // 在指定位置绘制圆形
+    });
+
+    // 将图形对象添加到舞台
+    app.stage.addChild(graphics);
+  </script>
+</body>
+
+</html>
