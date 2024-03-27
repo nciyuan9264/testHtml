@@ -14,8 +14,8 @@ body{
   align-items: center;
 }
 #container{
-  width: 500px;
+  width: 700px;
   height: 500px;
   /* background-color: rgb(93, 108, 117); */
-  background-color: rgb(60, 94, 156);
+  background-color: rgb(213, 213, 205);
 }
