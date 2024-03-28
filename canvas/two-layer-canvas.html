@@ -54,7 +54,7 @@
 
     // 重新绘制 fgCanvas
     drawForeground();
-  }, { passive: true });
+  });
 
   // 绘制底层画布（图像）
   function drawBackground() {
@@ -164,6 +164,13 @@
     drawBackground();
   };
 
+  fgCanvas.addEventListener('wheel', (e)=>{
+    if(e.deltaY < 0){
+      radius = Math.min(++radius, 120);
+    }else if(e.deltaY > 0){
+      radius = Math.max(--radius, 50);
+    }
+  })
 </script>
 
 </html>
