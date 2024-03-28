@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    #container{
+      background-color: bisque;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="container"></canvas>
+</body>
+<script>
+  const worker = new Worker('./worker.js');
+
+  var canvas = document.getElementById('container');
+  canvas.width = 1200;
+  canvas.height = 1200;
+
+  var ctx = canvas.getContext('2d');
+  worker.postMessage({ msg: 'init' });
+
+  worker.onmessage = function (e) {
+    // 这里接收到 worker 传来的离屏 canvas 位图
+    ctx.drawImage(e.data.imageBitmap, 0, 0);
+  }
+
+  // 绘制圆形并描边
+  ctx.arc(100, 75, 50, 0, 2 * Math.PI);
+  ctx.stroke();
+
+</script>
+
+</html>

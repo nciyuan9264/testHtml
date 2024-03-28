@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="canvasOne"></canvas>
+</body>
+<script>
+  var canvas = document.getElementById('canvasOne'); 
+var ctx = canvas.getContext('2d'); 
+var w = canvas.width = 1080; 
+var h = canvas.height = 800; 
+var image = new Image(); 
+image.src = 'https://farm3.staticflickr.com/2908/32764885503_1a04915b11_k.jpg'; 
+canvas.addEventListener('mousemove', mouseMove, false);
+function draw(cx, cy, radius) { 
+	ctx.clearRect(0, 0, w, h);
+	ctx.save();
+  ctx.beginPath();
+	ctx.fillStyle = '#FFF'; 
+	ctx.fillRect(0, 0, w, h); 
+	ctx.fill(); 
+	ctx.save(); 
+  
+	ctx.beginPath();
+  //var radial = ctx.createRadialGradient(cx,cy,0,cx,cy,radius);
+	//radial.addColorStop(0,'rgba(0,0,0,1)');
+	//radial.addColorStop(0.6,'rgba(0,0,0,1)');
+	//radial.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle="#FFF";
+
+	ctx.arc(cx, cy, radius, 0, Math.PI * 2, false); 
+	ctx.fill(); 
+	// 将上面的区域作为剪辑区域
+  ctx.clip(); 
+	// 由于使用clip()，画布背景图片会出现在clip()区域内 
+	ctx.drawImage(image, 0, 0); 
+	ctx.restore(); 
+}
+function mouseMove(e) {
+  e.preventDefault();
+	e.stopPropagation();
+
+	mouseX = parseInt(e.clientX);
+  mouseY = parseInt(e.clientY);
+  draw(mouseX, mouseY, 100);
+}
+draw(w / 2, h / 2, 100);
+</script>
+</html>

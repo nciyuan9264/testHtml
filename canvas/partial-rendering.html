@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    #bgCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+
+    #fgCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="bgCanvas"></canvas>
+  <canvas id="fgCanvas"></canvas>
+</body>
+<script>
+  // 创建底层画布
+  var bgCanvas = document.getElementById('bgCanvas');
+  var w = bgCanvas.width = 1080;
+  var h = bgCanvas.height = 800;
+  var bgCtx = bgCanvas.getContext('2d');
+  window.bgCtx = bgCtx;
+  // 创建上层画布
+  var fgCanvas = document.getElementById('fgCanvas');
+  var w = fgCanvas.width = 1080;
+  var h = fgCanvas.height = 800;
+  var fgCtx = fgCanvas.getContext('2d');
+
+  var radius = 50;
+  var image = new Image();
+  image.src = 'https://farm3.staticflickr.com/2908/32764885503_1a04915b11_k.jpg';
+  window.image = image;
+  var mouseX = fgCanvas.width / 2; // 初始位置为画布中心
+  var mouseY = fgCanvas.height / 2;
+
+  // 鼠标移动事件处理程序
+  fgCanvas.addEventListener('mousemove', function (event) {
+    // 获取鼠标相对于 fgCanvas 的坐标
+    var rect = fgCanvas.getBoundingClientRect();
+    mouseX = event.clientX - rect.left;
+    mouseY = event.clientY - rect.top;
+
+    // 重新绘制 fgCanvas
+    drawForeground();
+  });
+
+  // 绘制底层画布（图像）
+  function drawBackground() {
+    // 清空底层画布
+    bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+    bgCtx.globalCompositeOperation = 'source-over';
+
+    let imgWidth = image.width;
+    let imgHeight = image.height;
+
+    let tileSizeWidth = imgWidth / 3; // 每个小图的大小
+    let tileSizeHeight = imgHeight / 3; // 每个小图的大小
+
+    let ratioW = w / imgWidth;
+    let ratioH = h / imgHeight;
+
+    // 从原始图像中裁剪九个小图并绘制到画布上
+    for (var i = 0; i < 3; i++) {
+      for (var j = 0; j < 3; j++) {
+        // 计算裁剪的位置和大小
+        var sx = j * tileSizeWidth;
+        var sy = i * tileSizeHeight;
+        var sw = tileSizeWidth;
+        var sh = tileSizeHeight;
+        // 计算绘制的位置和大小
+        var dx = j * tileSizeWidth * ratioW;
+        var dy = i * tileSizeHeight * ratioH;
+        var dw = tileSizeWidth * ratioW;
+        var dh = tileSizeHeight * ratioH;
+        // 绘制裁剪后的小图
+        bgCtx.drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
+      }
+    }
+  }
+
+  // 绘制上层画布（圆形）
+  function drawForeground() {
+    // 清空上层画布
+    fgCtx.clearRect(0, 0, fgCanvas.width, fgCanvas.height);
+    // 绘制圆形
+    fgCtx.beginPath();
+    fgCtx.arc(mouseX, mouseY, radius, 0, Math.PI * 2, false);
+    fgCtx.closePath();
+
+    // 使用 destination-in 模式
+    fgCtx.globalCompositeOperation = 'destination-in';
+    fgCtx.fillStyle = "#000"; // 遮罩的颜色，可更改为您希望的任何颜色
+    fgCtx.fill();
+  }
+
+  image.onload = function () {
+    // 图像加载后立即绘制底层画布
+    drawBackground();
+  };
+
+</script>
+
+</html>

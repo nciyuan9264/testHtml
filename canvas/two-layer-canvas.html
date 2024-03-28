@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    #bgCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+
+    #fgCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="bgCanvas"></canvas>
+  <canvas id="fgCanvas"></canvas>
+</body>
+<script>
+  // 创建底层画布
+  var bgCanvas = document.getElementById('bgCanvas');
+  var w = bgCanvas.width = 1080;
+  var h = bgCanvas.height = 800;
+  var bgCtx = bgCanvas.getContext('2d');
+  window.bgCtx = bgCtx;
+  // 创建上层画布
+  var fgCanvas = document.getElementById('fgCanvas');
+  var w = fgCanvas.width = 1080;
+  var h = fgCanvas.height = 800;
+  var fgCtx = fgCanvas.getContext('2d');
+
+  var radius = 80;
+  var image = new Image();
+  image.src = 'https://farm3.staticflickr.com/2908/32764885503_1a04915b11_k.jpg';
+  window.image = image;
+  var mouseX = fgCanvas.width / 2; // 初始位置为画布中心
+  var mouseY = fgCanvas.height / 2;
+
+  // 鼠标移动事件处理程序
+  fgCanvas.addEventListener('mousemove', function (event) {
+    // 获取鼠标相对于 fgCanvas 的坐标
+    var rect = fgCanvas.getBoundingClientRect();
+    mouseX = event.clientX - rect.left;
+    mouseY = event.clientY - rect.top;
+
+    // 重新绘制 fgCanvas
+    drawForeground();
+  }, { passive: true });
+
+  // 绘制底层画布（图像）
+  function drawBackground() {
+    // 清空底层画布
+    bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+    bgCtx.drawImage(image, 0, 0);
+    fgCtx.fillStyle = "#ffffff"; // 白色
+    fgCtx.fillRect(0, 0, fgCanvas.width, fgCanvas.height); // 绘制填充白色的矩形，覆盖整个画布
+  }
+
+  function clearRect(tileIndex) {
+    let firstPos = tileIndex.slice(0, 1);
+    let x = firstPos === '1' || firstPos === '3' ? 0 : fgCanvas.width / 2;
+    let y = firstPos === '1' || firstPos === '2' ? 0 : fgCanvas.height / 2;
+    let width = fgCanvas.width / 2;
+    let height = fgCanvas.height / 2;
+    if (tileIndex.length > 2) {
+      width = fgCanvas.width;
+      height = fgCanvas.height;
+    } else if (tileIndex.length === 2) {
+      if (tileIndex === '12' || tileIndex === '34') {
+        width = fgCanvas.width;
+        height = fgCanvas.height / 2;
+      } else if (tileIndex === '13' || tileIndex === '24') {
+        width = fgCanvas.width / 2;
+        height = fgCanvas.height;
+      }
+    }
+
+    fgCtx.clearRect(x, y, width, height);
+    fgCtx.restore();
+    fgCtx.save()
+    fgCtx.beginPath();
+    fgCtx.rect(x, y, width, height);
+    fgCtx.clip();
+    fgCtx.fillRect(x, y, width, height); // 绘制填充白色的矩形，覆盖整个画布
+  }
+
+  // 绘制上层画布（圆形）
+  function drawForeground() {
+    // fgCtx.save()
+    fgCtx.globalCompositeOperation = "source-over";
+    // 清空上层画布
+    fgCtx.fillStyle = "#ffffff"
+    /**
+     * 1,2
+     * 3,4
+     * */
+    if (mouseX <= fgCanvas.width / 2 && mouseY < fgCanvas.height / 2) {
+      // 1号画布
+      if (mouseX > fgCanvas.width / 2 - radius && mouseY > fgCanvas.height / 2 - radius) {
+        clearRect('1234');
+      } else if (mouseX > fgCanvas.width / 2 - radius) {
+        clearRect('12');
+      } else if (mouseY > fgCanvas.height / 2 - radius) {
+        clearRect('13');
+      } else {
+        clearRect('1');
+      }
+    } else if (mouseX > fgCanvas.width / 2 && mouseY < fgCanvas.height / 2) {
+      // 2号画布
+      if (mouseX < fgCanvas.width / 2 + radius && mouseY > fgCanvas.height / 2 - radius) {
+        clearRect('1234');
+      } else if (mouseX < fgCanvas.width / 2 + radius) {
+        clearRect('12');
+      } else if (mouseY > fgCanvas.height / 2 - radius) {
+        clearRect('24');
+      } else {
+        clearRect('2');
+      }
+    } else if (mouseX <= fgCanvas.width / 2 && mouseY >= fgCanvas.height / 2) {
+      // 3号画布
+      if (mouseX > fgCanvas.width / 2 - radius && mouseY < fgCanvas.height / 2 + radius) {
+        clearRect('1234');
+      } else if (mouseX > fgCanvas.width / 2 - radius) {
+        clearRect('34');
+      } else if (mouseY < fgCanvas.height / 2 + radius) {
+        clearRect('13');
+      } else {
+        clearRect('3');
+      }
+    } else if (mouseX >= fgCanvas.width / 2 && mouseY >= fgCanvas.height / 2) {
+      // 4号画布
+      if (mouseX < fgCanvas.width / 2 + radius && mouseY < fgCanvas.height / 2 + radius) {
+        clearRect('1234');
+      } else if (mouseX < fgCanvas.width / 2 + radius) {
+        clearRect('34');
+      } else if (mouseY < fgCanvas.height / 2 + radius) {
+        clearRect('24');
+      } else {
+        clearRect('4');
+      }
+    }
+
+    fgCtx.globalCompositeOperation = 'destination-out';
+    // 绘制圆形
+    // 绘制圆形
+    fgCtx.beginPath();
+    fgCtx.arc(mouseX, mouseY, radius - 5, 0, Math.PI * 2, false);
+    fgCtx.closePath();
+    fgCtx.fillStyle = "rgba(0, 0, 0, 1)";
+    fgCtx.fill();
+  }
+
+  image.onload = function () {
+    // 图像加载后立即绘制底层画布
+    drawBackground();
+  };
+
+</script>
+
+</html>

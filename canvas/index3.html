@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas 矩形移动示例</title>
+  <style>
+    canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="myCanvas" width="400" height="200"></canvas>
+  <script>
+    // 获取 canvas 元素和上下文
+    var canvas = document.getElementById('myCanvas');
+    var ctx = canvas.getContext('2d');
+
+    // 定义矩形初始位置和大小
+    var x = 0;
+    var y = 50;
+    var width = 50;
+    var height = 50;
+
+    // 绘制矩形的函数
+    function drawRect() {
+      // 清空画布
+      // ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // 绘制矩形
+      ctx.fillStyle = 'blue';
+      ctx.fillRect(x, y, width, height);
+    }
+
+    // 每秒平移矩形的函数
+    function moveRect() {
+      // 更新矩形的 x 坐标
+      x += 10;
+
+      // 重新绘制矩形
+      drawRect();
+    }
+
+    // 初始绘制矩形
+    drawRect();
+
+    // 每秒平移矩形
+    setInterval(moveRect, 1000);
+  </script>
+</body>
+</html>

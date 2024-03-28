@@ -1,13 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Canvas 局部渲染示例</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+            background-color: rgb(32, 172, 172);
+        }
+    </style>
 </head>
+
 <body>
+    <canvas id="myCanvas" width="400" height="200"></canvas>
     <script>
+        // 获取 canvas 元素和上下文
+        var canvas = document.getElementById('myCanvas');
+        window.ctx = canvas.getContext('2d');
+
+        // 绘制一个矩形
+        function drawRect(x, y, width, height, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, width, height);
+        }
+
+        // 清除指定区域的颜色，并设置 clip
+        function clearAndClip(x, y, width, height) {
+            ctx.clearRect(x, y, width - 10, height);
+            ctx.restore()
+            ctx.save()
+            ctx.beginPath();
+            if(x < 20 || x >= 320){
+                ctx.fillStyle = 'rgb(32, 172, 172)'
+            }
+            ctx.fillRect(x, y, width - 10 , height); // 绘制填充白色的矩形，覆盖整个画布
+            ctx.rect(x + 10, y, width, height);
+            ctx.clip();
+        }
+
+        // 绘制一些图形
+        function draw() {
+            // 绘制一个大矩形
+            drawRect(20, 20, 300, 150, 'red');
+            // 清除并设置 clip
+            
+            let ii = 0;
+            window.timeflag = setInterval(() => {
+                // 绘制一个小矩形，只有在 clip 区域内会被绘制
+                clearAndClip(10 * (ii - 1), 60, 20, 10);
+                drawRect(10 * ii, 60, 10, 10, 'blue');
+                
+                ii++
+            }, 500);
+        }
+
+        // 初始绘制
+        draw();
     </script>
-    <canvas width="300px" height="300px"></canvas>
 </body>
+
 </html>
