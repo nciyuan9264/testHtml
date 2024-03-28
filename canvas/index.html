@@ -32,10 +32,10 @@
             ctx.restore()
             ctx.save()
             ctx.beginPath();
-            if(x < 20 || x >= 320){
+            if (x < 20 || x >= 320) {
                 ctx.fillStyle = 'rgb(32, 172, 172)'
             }
-            ctx.fillRect(x, y, width - 10 , height); // 绘制填充白色的矩形，覆盖整个画布
+            ctx.fillRect(x, y, width - 10, height); // 绘制填充白色的矩形，覆盖整个画布
             ctx.rect(x + 10, y, width, height);
             ctx.clip();
         }
@@ -45,13 +45,14 @@
             // 绘制一个大矩形
             drawRect(20, 20, 300, 150, 'red');
             // 清除并设置 clip
-            
+
             let ii = 0;
             window.timeflag = setInterval(() => {
                 // 绘制一个小矩形，只有在 clip 区域内会被绘制
                 clearAndClip(10 * (ii - 1), 60, 20, 10);
+                if (ii > 30) ii = 0;
                 drawRect(10 * ii, 60, 10, 10, 'blue');
-                
+
                 ii++
             }, 500);
         }
