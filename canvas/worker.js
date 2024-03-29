@@ -17,7 +17,7 @@ function init() {
 function draw() {
   ctx.clearRect(0, 0, offscreen.width, offscreen.height);
   for (var i = 0; i < 10000; i++) {
-    for (var j = 0; j < 1000; j++) {
+    for (var j = 0; j < 2000; j++) {
       ctx.fillRect(i * 4, j * 4, 3, 3);
     }
   }
